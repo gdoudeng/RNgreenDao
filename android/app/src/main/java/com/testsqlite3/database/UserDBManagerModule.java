@@ -16,12 +16,12 @@ import com.testsqlite3.database.greendao.UserDao;
 
 import java.util.List;
 
-public class DBManagerModule extends ReactContextBaseJavaModule {
+public class UserDBManagerModule extends ReactContextBaseJavaModule {
 
     private UserDao mUserDao;
-    private static final String TAG = "DBManagerModule";
+    private static final String TAG = "UserDBManagerModule";
 
-    public DBManagerModule(@NonNull ReactApplicationContext reactContext) {
+    public UserDBManagerModule(@NonNull ReactApplicationContext reactContext) {
         super(reactContext);
         DaoSession daoSession = ((MainApplication) reactContext.getApplicationContext()).getDaoSession();
         //获取的UserDao供我们操作数据
