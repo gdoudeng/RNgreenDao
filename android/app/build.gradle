@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'org.greenrobot.greendao' // apply plugin
 
 import com.android.build.OutputFile
 
@@ -76,8 +77,8 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js",
-    enableHermes: false,  // clean and rebuild if changing
+        entryFile   : "index.js",
+        enableHermes: false,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -144,6 +145,14 @@ android {
         }
     }
     signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -158,7 +167,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -177,11 +186,22 @@ android {
 
         }
     }
+
+    greendao {
+        //数据库版本号，升级时进行修改
+        schemaVersion 1
+        //生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名
+        daoPackage 'com.testsqlite3.database.greendao'
+        //生成源文件的路径。默认源文件目录是在build目录中的(build/generated/source/greendao)
+        targetGenDir 'src/main/java'
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'org.greenrobot:greendao:3.2.2' // add library
+    implementation 'io.github.yuweiguocn:GreenDaoUpgradeHelper:v2.2.1'
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
