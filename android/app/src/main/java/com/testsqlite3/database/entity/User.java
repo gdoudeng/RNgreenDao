@@ -1,4 +1,4 @@
-package com.testsqlite3.database.Entity;
+package com.testsqlite3.database.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;

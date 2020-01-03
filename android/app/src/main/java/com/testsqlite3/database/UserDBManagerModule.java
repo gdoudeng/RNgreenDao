@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.testsqlite3.MainApplication;
-import com.testsqlite3.database.Entity.User;
+import com.testsqlite3.database.entity.User;
 import com.testsqlite3.database.greendao.DaoSession;
 import com.testsqlite3.database.greendao.UserDao;
 
