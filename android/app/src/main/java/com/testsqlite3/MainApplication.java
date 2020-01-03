@@ -8,11 +8,16 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.testsqlite3.database.DBManagerPackage;
+import com.testsqlite3.database.greendao.DaoMaster;
+import com.testsqlite3.database.greendao.DaoSession;
+import com.testsqlite3.database.support.MySQLiteOpenHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+    private DaoSession mDaoSession;
 
     private final ReactNativeHost mReactNativeHost =
             new ReactNativeHost(this) {
@@ -26,7 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
                     @SuppressWarnings("UnnecessaryLocalVariable")
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Packages that cannot be autolinked yet can be added manually here, for example:
-                    // packages.add(new MyReactNativePackage());
+                    packages.add(new DBManagerPackage());
                     return packages;
                 }
 
@@ -46,6 +51,12 @@ public class MainApplication extends Application implements ReactApplication {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
         initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+        // 这里使用自定义的Helper对DaoMaster进行初始化，这样就可以实现数据库升级时的数据迁移
+        // 默认的DaoMaster.OpenHelper不具备数据迁移功能，它会在数据库升级时将数据删除。
+        MySQLiteOpenHelper helper = new MySQLiteOpenHelper(this, "RNGreenDAOStorage.db", null);
+        mDaoSession = new DaoMaster(helper.getWritableDatabase()).newSession();
+        // 清空缓存
+        mDaoSession.clear();
     }
 
     /**
@@ -72,5 +83,9 @@ public class MainApplication extends Application implements ReactApplication {
                 e.printStackTrace();
             }
         }
+    }
+
+    public DaoSession getDaoSession() {
+        return mDaoSession;
     }
 }
