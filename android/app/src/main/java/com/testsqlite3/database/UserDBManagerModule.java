@@ -86,7 +86,9 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getUserSize(Callback callback) {
         long count = mUserDao.queryBuilder().count();
-        callback.invoke(count);
+        WritableMap map = Arguments.createMap();
+        map.putInt("size", (int) count);
+        callback.invoke(map);
     }
 
     @ReactMethod

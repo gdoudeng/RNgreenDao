@@ -1,8 +1,13 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, FlatList, Image, TextInput, ScrollView} from 'react-native';
+import {ScrollView, StyleSheet, TextInput, View, ToastAndroid, Text} from 'react-native';
 import {Button, Card, Colors} from 'react-native-paper';
+import UserDao from '../dao/UserDao';
 
 class Home extends Component {
+  static navigationOptions = {
+    title: '数据库操作',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -27,23 +32,77 @@ class Home extends Component {
     };
   }
 
-  static navigationOptions = {
-    title: '数据库操作',
+  _checkUserKey = userKey => {
+    return /^[0-9]*$/.test(userKey);
+  };
+
+  _checkUserAge = age => {
+    return /^[0-9]*$/.test(age);
   };
 
   _insert = () => {
+    const {userkey, username, age} = this.state;
+    if (this._checkUserKey(userkey) && username && this._checkUserAge(age)) {
+      UserDao.addUser(userkey, username, age, success => {
+        if (success) {
+          ToastAndroid.show('插入成功', ToastAndroid.SHORT);
+          this.setState({userkey: '', username: '', age: ''});
+        }
+      });
+    } else {
+      ToastAndroid.show('信息不正确', ToastAndroid.SHORT);
+    }
   };
 
   _queryAllUser = () => {
+    const {actionName1} = this.state;
+    UserDao.getAllUser().then(result => {
+      this.setState({title: [actionName1], list: result});
+      ToastAndroid.show('查询成功', ToastAndroid.SHORT);
+    }).catch(e => {
+      ToastAndroid.show(e, ToastAndroid.SHORT);
+    });
   };
 
   _queryUserByName = () => {
+    const {searchUserName, actionName2} = this.state;
+    if (searchUserName) {
+      UserDao.queryUserByUserName(searchUserName, result => {
+        if (result.length > 0) {
+          this.setState({title: [actionName2], list: result});
+          ToastAndroid.show('查询成功', ToastAndroid.SHORT);
+        } else {
+          ToastAndroid.show('没有查询到数据', ToastAndroid.SHORT);
+        }
+      });
+    } else {
+      ToastAndroid.show('请输入要查询的用户名', ToastAndroid.SHORT);
+    }
+
   };
 
+  _queryZSUser = () => {
+    const {actionName3} = this.state;
+    UserDao.queryUserByUserName('张三', result => {
+      this.setState({title: [actionName3], list: result});
+      ToastAndroid.show('查询成功', ToastAndroid.SHORT);
+    });
+  };
   _queryUserAgeBigThan18DescOrderByAge = () => {
+    const {actionName4} = this.state;
+    UserDao.queryUserOlderThan18OrderByAge(result => {
+      this.setState({title: [actionName4], list: result});
+      ToastAndroid.show('查询成功', ToastAndroid.SHORT);
+    });
+
   };
 
   queryUserSize = () => {
+    UserDao.getUserSize(result => {
+      if (result) {
+        ToastAndroid.show('查询成功，用户数量为 ' + result.size, ToastAndroid.SHORT);
+      }
+    });
   };
 
   _updateUser1 = () => {
@@ -92,7 +151,11 @@ class Home extends Component {
               <Card.Title title="查询结果展示" subtitle={title}/>
               <Card.Content>
                 {list.map(valueObj => {
-                  return <View/>;
+                  return <View style={styles.itemViewWrap} key={valueObj.id}>
+                    <Text style={styles.itemText}>id：{valueObj.id}</Text>
+                    <Text style={styles.itemText}>姓名：{valueObj.username}</Text>
+                    <Text style={styles.itemText}>年龄：{valueObj.age}</Text>
+                  </View>;
                 })}
               </Card.Content>
             </Card>
@@ -172,7 +235,7 @@ class Home extends Component {
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._queryUserByName}>{actionName2}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
-                        onPress={this._queryUserByName}>{actionName3}</Button>
+                        onPress={this._queryZSUser}>{actionName3}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._queryUserAgeBigThan18DescOrderByAge}>{actionName4}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
@@ -231,6 +294,14 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 30,
+  },
+  itemViewWrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  itemText: {
+    fontSize: 14,
   },
   noListView: {
     justifyContent: 'center',

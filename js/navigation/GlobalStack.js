@@ -1,5 +1,4 @@
 import React from 'react';
-import {StatusBar} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator, TransitionPresets} from 'react-navigation-stack';
 import LoginScreen from '../pages/Login';
