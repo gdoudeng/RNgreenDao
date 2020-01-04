@@ -22,10 +22,11 @@ export default class UserDao {
    * @param id 主键id Long
    * @param username 用户名 String
    * @param age 年龄 int
+   * @param email string
    * @param callback
    */
-  static addUser(id, username, age, callback) {
-    UserDBManagerModule.addUser(Number(id), username, Number(age), callback);
+  static addUser(id, username, age, email, callback) {
+    UserDBManagerModule.addUser(Number(id), username, Number(age), email, callback);
   }
 
   static queryUserByUserName(username, callback) {

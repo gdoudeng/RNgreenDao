@@ -35,6 +35,7 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
             map.putInt("id", users.get(i).getId().intValue());
             map.putString("username", users.get(i).getUsername());
             map.putInt("age", users.get(i).getAge());
+            map.putString("email", users.get(i).getEmail());
             userList.pushMap(map);
         }
         return userList;
@@ -42,11 +43,12 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
 
     //    ========================= 增 =========================
     @ReactMethod
-    public void addUser(int userKey, String userName, int userAge, Callback callback) {
+    public void addUser(int userKey, String userName, int userAge, String email, Callback callback) {
         User user = new User();
         user.setId((long) userKey);
         user.setUsername(userName);
         user.setAge(userAge);
+        user.setEmail(email);
         mUserDao.insertOrReplace(user);
         callback.invoke(true);
     }

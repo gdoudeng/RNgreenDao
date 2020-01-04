@@ -24,6 +24,7 @@ class Home extends BaseComponent {
       username: '',
       userkey: '',
       age: '',
+      email: '',
       deleteUserName: '',
       searchUserName: '',
       visible: false,
@@ -39,11 +40,11 @@ class Home extends BaseComponent {
   };
 
   _insert = () => {
-    const {userkey, username, age} = this.state;
-    if (this._checkUserKey(userkey) && username && this._checkUserAge(age)) {
-      UserDao.addUser(userkey, username, age, success => {
+    const {userkey, username, age, email} = this.state;
+    if (this._checkUserKey(userkey) && username && this._checkUserAge(age) && email) {
+      UserDao.addUser(userkey, username, age, email, success => {
         ToastAndroid.show('插入成功', ToastAndroid.SHORT);
-        this.setState({userkey: '', username: '', age: ''});
+        this.setState({userkey: '', username: '', age: '', email: ''});
       });
     } else {
       ToastAndroid.show('信息不正确', ToastAndroid.SHORT);
@@ -160,6 +161,7 @@ class Home extends BaseComponent {
       userkey,
       username,
       age,
+      email,
       actionName1,
       actionName2,
       actionName3,
@@ -186,6 +188,7 @@ class Home extends BaseComponent {
                     <Text style={styles.itemText}>id：{valueObj.id}</Text>
                     <Text style={styles.itemText}>姓名：{valueObj.username}</Text>
                     <Text style={styles.itemText}>年龄：{valueObj.age}</Text>
+                    <Text style={styles.itemText}>email：{valueObj.email}</Text>
                   </View>;
                 })}
               </Card.Content>
@@ -218,12 +221,28 @@ class Home extends BaseComponent {
                     keyboardType={'default'}
                     maxLength={20}
                     onSubmitEditing={() => {
-                      this.ageTextField.focus();
+                      this.emailTextField.focus();
                     }}
                     onChangeText={(text) => {
                       this.setState({username: text});
                     }}
                     value={username}
+                />
+                <TextInput
+                    ref={(ref) => this.emailTextField = ref}
+                    style={styles.textField}
+                    placeholder={'输入用户email'}
+                    returnKeyType={'next'}
+                    returnKeyLabel={'next'}
+                    keyboardType={'default'}
+                    maxLength={20}
+                    onSubmitEditing={() => {
+                      this.ageTextField.focus();
+                    }}
+                    onChangeText={(text) => {
+                      this.setState({email: text});
+                    }}
+                    value={email}
                 />
                 <TextInput
                     ref={(ref) => this.ageTextField = ref}
