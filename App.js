@@ -1,4 +1,4 @@
 import navigatorFactory from './js/navigation/GlobalStack';
 
-const root = 'Home';
+const root = 'Login';
 export default navigatorFactory(root);

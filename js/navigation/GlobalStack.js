@@ -3,6 +3,7 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator, TransitionPresets} from 'react-navigation-stack';
 import LoginScreen from '../pages/Login';
 import HomeScreen from '../pages/Home';
+import Home2Screen from '../pages/Home2';
 
 export default function (initialRouteName) {
   return createAppContainer(createStackNavigator({
@@ -11,6 +12,9 @@ export default function (initialRouteName) {
         },
         Home: {
           screen: HomeScreen,
+        },
+        Home2: {
+          screen: Home2Screen,
         },
       },
       {
