@@ -55,4 +55,19 @@ export default class UserDao {
   static deleteUserWhoUnder18(callback) {
     UserDBManagerModule.deleteUserWhoUnder18(callback);
   }
+
+  /**
+   * 根据id修改用户名
+   * @param id number
+   * @param username string
+   * @param callback
+   */
+  static updateUserNameById(id, username, callback) {
+    UserDBManagerModule.updateUserNameById(id, username, callback);
+  }
+
+  // 将所有年龄大于等于18岁的用户改名为成年人
+  static updateUserNameWhoOlder18(callback) {
+    UserDBManagerModule.updateUserNameWhoOlder18(callback);
+  }
 }

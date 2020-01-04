@@ -102,9 +102,15 @@ class Home extends BaseComponent {
   };
 
   _updateUser1 = () => {
+    UserDao.updateUserNameWhoOlder18(success => {
+      ToastAndroid.show('修改成功', ToastAndroid.SHORT);
+    });
   };
 
   _updateUser2 = () => {
+    UserDao.updateUserNameById(2, '渣渣辉', success => {
+      ToastAndroid.show('修改成功', ToastAndroid.SHORT);
+    });
   };
 
   _deleteById = () => {

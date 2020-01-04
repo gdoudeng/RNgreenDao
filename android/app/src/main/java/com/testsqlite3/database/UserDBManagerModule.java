@@ -122,6 +122,26 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
         callback.invoke(true);
     }
 
+    //    ========================= 改 =========================
+    // 将所有年龄大于等于18岁的用户改名为成年人
+    @ReactMethod
+    public void updateUserNameWhoOlder18(Callback callback) {
+        List<User> users = mUserDao.queryBuilder().where(UserDao.Properties.Age.ge(18)).list();
+        for (int i = 0; i < users.size(); i++) {
+            users.get(i).setUsername("成年人");
+        }
+        mUserDao.updateInTx(users);
+        callback.invoke(true);
+    }
+
+    @ReactMethod
+    public void updateUserNameById(int id, String username, Callback callback) {
+        User user = mUserDao.queryBuilder().where(UserDao.Properties.Id.eq(id)).unique();
+        user.setUsername(username);
+        mUserDao.update(user);
+        callback.invoke(true);
+    }
+
     @NonNull
     @Override
     public String getName() {
