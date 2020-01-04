@@ -1,13 +1,10 @@
-import React, {Component} from 'react';
-import {ScrollView, StyleSheet, TextInput, View, ToastAndroid, Text} from 'react-native';
+import React from 'react';
+import {ScrollView, StyleSheet, Text, TextInput, ToastAndroid, View} from 'react-native';
 import {Button, Card, Colors} from 'react-native-paper';
 import UserDao from '../dao/UserDao';
+import BaseComponent from '../components/BaseComponent';
 
-class Home extends Component {
-  static navigationOptions = {
-    title: '数据库操作',
-  };
-
+class Home extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -123,7 +120,7 @@ class Home extends Component {
   _deleteUserAgeLowThan18 = () => {
   };
 
-  render() {
+  _render() {
     const {
       list,
       title,
