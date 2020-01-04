@@ -17,6 +17,8 @@ public class DBManagerPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         List<NativeModule> nativeModules = new ArrayList<>();
         nativeModules.add(new UserDBManagerModule(reactContext));
+        nativeModules.add(new StudentDBManagerModule(reactContext));
+        nativeModules.add(new IdCardDBManagerModule(reactContext));
         return nativeModules;
     }
 

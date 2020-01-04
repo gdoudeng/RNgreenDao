@@ -82,7 +82,7 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getAllUser(Callback callback) {
-        List<User> users = mUserDao.queryBuilder().list();
+        List<User> users = mUserDao.loadAll();
         WritableArray array = wrapUserList(users);
         callback.invoke(array);
     }
