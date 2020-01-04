@@ -113,14 +113,14 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
     // 删除年龄小于18的用户
     @ReactMethod
     public void deleteUserWhoUnder18(Callback callback) {
-        mUserDao.deleteInTx(mUserDao.queryBuilder().where(UserDao.Properties.Age.lt(18)).list());
+        mUserDao.queryBuilder().where(UserDao.Properties.Age.lt(18)).buildDelete().executeDeleteWithoutDetachingEntities();
         callback.invoke(true);
     }
 
 
     @ReactMethod
     public void deleteUserByUserName(String username, Callback callback) {
-        mUserDao.deleteInTx(mUserDao.queryBuilder().where(UserDao.Properties.Username.eq(username)).list());
+        mUserDao.queryBuilder().where(UserDao.Properties.Username.eq(username)).buildDelete().executeDeleteWithoutDetachingEntities();
         callback.invoke(true);
     }
 

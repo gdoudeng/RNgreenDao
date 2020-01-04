@@ -32,7 +32,7 @@ class BaseComponent extends Component {
 
   _hideLogoutDialog = () => this.setState({logoutDialogVisible: false});
 
-  _confirmLogout = async () => {
+  _confirmLogout = () => {
     this._hideLogoutDialog();
     // 重置路由
     const resetAction = StackActions.reset({
