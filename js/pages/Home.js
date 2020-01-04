@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, ToastAndroid, View} from 'react-native';
-import {Button, Card, Colors} from 'react-native-paper';
+import {Button, Card, Colors, Dialog, Portal} from 'react-native-paper';
 import UserDao from '../dao/UserDao';
 import BaseComponent from '../components/BaseComponent';
 
@@ -26,6 +26,7 @@ class Home extends BaseComponent {
       age: '',
       deleteUserName: '',
       searchUserName: '',
+      visible: false,
     };
   }
 
@@ -41,10 +42,8 @@ class Home extends BaseComponent {
     const {userkey, username, age} = this.state;
     if (this._checkUserKey(userkey) && username && this._checkUserAge(age)) {
       UserDao.addUser(userkey, username, age, success => {
-        if (success) {
-          ToastAndroid.show('插入成功', ToastAndroid.SHORT);
-          this.setState({userkey: '', username: '', age: ''});
-        }
+        ToastAndroid.show('插入成功', ToastAndroid.SHORT);
+        this.setState({userkey: '', username: '', age: ''});
       });
     } else {
       ToastAndroid.show('信息不正确', ToastAndroid.SHORT);
@@ -109,15 +108,43 @@ class Home extends BaseComponent {
   };
 
   _deleteById = () => {
+    UserDao.deleteUserById(1, success => {
+      ToastAndroid.show('删除成功', ToastAndroid.SHORT);
+    });
   };
 
   _deleteByName = () => {
+    const {deleteUserName} = this.state;
+    if (deleteUserName) {
+      UserDao.deleteUserByUserName(deleteUserName, success => {
+        this.setState({deleteUserName: ''});
+        ToastAndroid.show('删除成功', ToastAndroid.SHORT);
+      });
+    } else {
+      ToastAndroid.show('请填写要删除的用户名', ToastAndroid.SHORT);
+    }
   };
 
+
   _deleteAllUser = () => {
+    UserDao.deleteAllUser(success => {
+      ToastAndroid.show('已删除所有用户', ToastAndroid.SHORT);
+    });
   };
 
   _deleteUserAgeLowThan18 = () => {
+    UserDao.deleteUserWhoUnder18(success => {
+      ToastAndroid.show('删除成功', ToastAndroid.SHORT);
+    });
+  };
+
+  _showDialog = () => this.setState({visible: true});
+
+  _hideDialog = () => this.setState({visible: false});
+
+  _confirmDeleteAllUser = () => {
+    this._hideDialog();
+    this._deleteAllUser();
   };
 
   _render() {
@@ -140,6 +167,7 @@ class Home extends BaseComponent {
       actionName11,
       deleteUserName,
       searchUserName,
+      visible,
     } = this.state;
     return (
         <View style={styles.container}>
@@ -271,12 +299,27 @@ class Home extends BaseComponent {
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._deleteUserAgeLowThan18}>{actionName9}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
-                        onPress={this._deleteAllUser}>{actionName10}</Button>
+                        onPress={this._showDialog}>{actionName10}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._deleteByName}>{actionName11}</Button>
               </Card.Content>
             </Card>
           </ScrollView>
+
+          <Portal>
+            <Dialog
+                visible={visible}
+                onDismiss={this._hideDialog}>
+              <Dialog.Title>提示</Dialog.Title>
+              <Dialog.Content>
+                <Text style={styles.logoutContent}>确认删除所有用户数据?</Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={this._hideDialog} style={styles.logoutBtn} color="#000000">取消</Button>
+                <Button onPress={this._confirmDeleteAllUser} style={styles.logoutBtn} color="#000000">确定</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
         </View>
     );
   }
@@ -340,5 +383,11 @@ const styles = StyleSheet.create({
   buttonStyle: {
     marginTop: 5,
     marginRight: 5,
+  },
+  logoutBtn: {
+    marginRight: 8,
+  },
+  logoutContent: {
+    fontSize: 16,
   },
 });

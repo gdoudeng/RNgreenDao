@@ -39,4 +39,20 @@ export default class UserDao {
   static getUserSize(callback) {
     UserDBManagerModule.getUserSize(callback);
   }
+
+  static deleteUserById(id, callback) {
+    UserDBManagerModule.deleteUserById(id, callback);
+  }
+
+  static deleteAllUser(callback) {
+    UserDBManagerModule.deleteAllUser(callback);
+  }
+
+  static deleteUserByUserName(username, callback) {
+    UserDBManagerModule.deleteUserByUserName(username, callback);
+  }
+
+  static deleteUserWhoUnder18(callback) {
+    UserDBManagerModule.deleteUserWhoUnder18(callback);
+  }
 }

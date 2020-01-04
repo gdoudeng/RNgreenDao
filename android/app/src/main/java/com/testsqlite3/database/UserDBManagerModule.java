@@ -40,6 +40,7 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
         return userList;
     }
 
+    //    ========================= 增 =========================
     @ReactMethod
     public void addUser(int userKey, String userName, int userAge, Callback callback) {
         User user = new User();
@@ -49,6 +50,8 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
         mUserDao.insertOrReplace(user);
         callback.invoke(true);
     }
+
+    //    ========================= 查 =========================
 
     /**
      * 根据用户名查询
@@ -91,6 +94,8 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
         callback.invoke(map);
     }
 
+    //    ========================= 删 =========================
+
     @ReactMethod
     public void deleteUserById(int id, Callback callback) {
         mUserDao.deleteByKey((long) id);
@@ -100,6 +105,20 @@ public class UserDBManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void deleteAllUser(Callback callback) {
         mUserDao.deleteAll();
+        callback.invoke(true);
+    }
+
+    // 删除年龄小于18的用户
+    @ReactMethod
+    public void deleteUserWhoUnder18(Callback callback) {
+        mUserDao.deleteInTx(mUserDao.queryBuilder().where(UserDao.Properties.Age.lt(18)).list());
+        callback.invoke(true);
+    }
+
+
+    @ReactMethod
+    public void deleteUserByUserName(String username, Callback callback) {
+        mUserDao.deleteInTx(mUserDao.queryBuilder().where(UserDao.Properties.Username.eq(username)).list());
         callback.invoke(true);
     }
 
