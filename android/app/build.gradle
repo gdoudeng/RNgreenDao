@@ -189,7 +189,7 @@ android {
 
     greendao {
         //数据库版本号，升级时进行修改
-        schemaVersion 2
+        schemaVersion 3
         //生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名
         daoPackage 'com.testsqlite3.database.greendao'
         //生成源文件的路径。默认源文件目录是在build目录中的(build/generated/source/greendao)
@@ -202,6 +202,9 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'org.greenrobot:greendao:3.2.2' // add library
     implementation 'io.github.yuweiguocn:GreenDaoUpgradeHelper:v2.2.1'
+    // fixed Failed resolution of: Lnet/sqlcipher/database/SQLiteOpenHelper 这是一个不好的解决方法。。。
+    // https://github.com/greenrobot/greenDAO/issues/428
+    implementation 'net.zetetic:android-database-sqlcipher:3.5.2'
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
