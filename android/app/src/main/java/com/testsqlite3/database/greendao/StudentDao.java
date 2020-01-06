@@ -239,7 +239,7 @@ public class StudentDao extends AbstractDao<Student, Long> {
             builder.append(',');
             SqlUtils.appendColumns(builder, "T0", daoSession.getIdCardDao().getAllColumns());
             builder.append(" FROM STUDENT T");
-            builder.append(" LEFT JOIN ID_CARD T0 ON T.\"NAME\"=T0.\"USER_NAME\"");
+            builder.append(" LEFT JOIN ID_CARD T0 ON T.\"_id\"=T0.\"_id\"");
             builder.append(' ');
             selectDeep = builder.toString();
         }

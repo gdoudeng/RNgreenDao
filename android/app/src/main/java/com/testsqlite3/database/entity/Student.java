@@ -33,7 +33,7 @@ public class Student {
     //几年级
     private String grade;
 
-    @ToOne(joinProperty = "name") // 一对一关系,name为IdCard的外键
+    @ToOne(joinProperty = "id") // 一对一关系,id为IdCard的外键
     private IdCard mIdCard;
 
     /**
@@ -138,16 +138,16 @@ public class Student {
         this.grade = grade;
     }
 
-    @Generated(hash = 1224620144)
-    private transient String mIdCard__resolvedKey;
+    @Generated(hash = 709993798)
+    private transient Long mIdCard__resolvedKey;
 
     /**
      * To-one relationship, resolved on first access.
      */
-    @Generated(hash = 420093948)
+    @Generated(hash = 1076843322)
     public IdCard getMIdCard() {
-        String __key = this.name;
-        if (mIdCard__resolvedKey == null || mIdCard__resolvedKey != __key) {
+        Long __key = this.id;
+        if (mIdCard__resolvedKey == null || !mIdCard__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -165,12 +165,12 @@ public class Student {
     /**
      * called by internal mechanisms, do not call yourself.
      */
-    @Generated(hash = 1324480801)
+    @Generated(hash = 309105486)
     public void setMIdCard(IdCard mIdCard) {
         synchronized (this) {
             this.mIdCard = mIdCard;
-            name = mIdCard == null ? null : mIdCard.getUserName();
-            mIdCard__resolvedKey = name;
+            id = mIdCard == null ? null : mIdCard.getId();
+            mIdCard__resolvedKey = id;
         }
     }
 
@@ -218,5 +218,6 @@ public class Student {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getStudentDao() : null;
     }
+
 
 }

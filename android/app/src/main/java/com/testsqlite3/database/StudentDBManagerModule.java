@@ -70,7 +70,7 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
         student.setName(chineseName);
         student.setSex("男");
         student.setAddress(RandomValue.getRoad());
-        student.setGrade((age % 10) + "年纪");
+        student.setGrade((age % 10) + "年级");
         student.setSchoolName(RandomValue.getSchoolName());
         mStudentDao.insert(student);
 //        为一对一关系的idcard添加数据
@@ -80,6 +80,7 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
 
     public void addOtherData(String userName, Long id, boolean isStudent) {
         IdCard idCard = new IdCard();
+        idCard.setId(id);
         idCard.setUserName(userName);
         idCard.setIdNo(RandomValue.getRandomID());
         mIdCardDao.insert(idCard);
@@ -93,7 +94,7 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
         callback.invoke(array);
     }
 
-    // 根据studentId获取其IDCard信息 这就是一对一关系的好处
+    // 根据studentId（根据学号 姓名查也是可以的）获取其IDCard信息 这就是一对一关系的好处
     @ReactMethod
     public void getIdCardByStudentId(int studentId, Callback callback) {
         Student student = mStudentDao.queryBuilder().where(StudentDao.Properties.Id.eq(studentId)).unique();

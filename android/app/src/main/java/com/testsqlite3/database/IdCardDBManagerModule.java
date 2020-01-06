@@ -43,6 +43,7 @@ public class IdCardDBManagerModule extends ReactContextBaseJavaModule {
 
     static WritableMap wrapIdCard(IdCard idCard) {
         WritableMap map = Arguments.createMap();
+        map.putInt("id", idCard.getId().intValue());
         map.putString("userName", idCard.getUserName());
         map.putString("idNo", idCard.getIdNo());
         return map;

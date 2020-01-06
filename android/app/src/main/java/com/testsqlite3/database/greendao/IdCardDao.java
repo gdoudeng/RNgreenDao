@@ -15,7 +15,7 @@ import com.testsqlite3.database.entity.IdCard;
 /** 
  * DAO for table "ID_CARD".
 */
-public class IdCardDao extends AbstractDao<IdCard, String> {
+public class IdCardDao extends AbstractDao<IdCard, Long> {
 
     public static final String TABLENAME = "ID_CARD";
 
@@ -24,8 +24,9 @@ public class IdCardDao extends AbstractDao<IdCard, String> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property UserName = new Property(0, String.class, "userName", true, "USER_NAME");
-        public final static Property IdNo = new Property(1, String.class, "idNo", false, "ID_NO");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property UserName = new Property(1, String.class, "userName", false, "USER_NAME");
+        public final static Property IdNo = new Property(2, String.class, "idNo", false, "ID_NO");
     }
 
 
@@ -41,8 +42,9 @@ public class IdCardDao extends AbstractDao<IdCard, String> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ID_CARD\" (" + //
-                "\"USER_NAME\" TEXT PRIMARY KEY NOT NULL ," + // 0: userName
-                "\"ID_NO\" TEXT UNIQUE );"); // 1: idNo
+                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
+                "\"USER_NAME\" TEXT NOT NULL ," + // 1: userName
+                "\"ID_NO\" TEXT UNIQUE );"); // 2: idNo
     }
 
     /** Drops the underlying database table. */
@@ -55,14 +57,15 @@ public class IdCardDao extends AbstractDao<IdCard, String> {
     protected final void bindValues(DatabaseStatement stmt, IdCard entity) {
         stmt.clearBindings();
  
-        String userName = entity.getUserName();
-        if (userName != null) {
-            stmt.bindString(1, userName);
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
         }
+        stmt.bindString(2, entity.getUserName());
  
         String idNo = entity.getIdNo();
         if (idNo != null) {
-            stmt.bindString(2, idNo);
+            stmt.bindString(3, idNo);
         }
     }
 
@@ -70,46 +73,50 @@ public class IdCardDao extends AbstractDao<IdCard, String> {
     protected final void bindValues(SQLiteStatement stmt, IdCard entity) {
         stmt.clearBindings();
  
-        String userName = entity.getUserName();
-        if (userName != null) {
-            stmt.bindString(1, userName);
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
         }
+        stmt.bindString(2, entity.getUserName());
  
         String idNo = entity.getIdNo();
         if (idNo != null) {
-            stmt.bindString(2, idNo);
+            stmt.bindString(3, idNo);
         }
     }
 
     @Override
-    public String readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public IdCard readEntity(Cursor cursor, int offset) {
         IdCard entity = new IdCard( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // userName
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // idNo
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.getString(offset + 1), // userName
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // idNo
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, IdCard entity, int offset) {
-        entity.setUserName(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setIdNo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setUserName(cursor.getString(offset + 1));
+        entity.setIdNo(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     @Override
-    protected final String updateKeyAfterInsert(IdCard entity, long rowId) {
-        return entity.getUserName();
+    protected final Long updateKeyAfterInsert(IdCard entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
     
     @Override
-    public String getKey(IdCard entity) {
+    public Long getKey(IdCard entity) {
         if(entity != null) {
-            return entity.getUserName();
+            return entity.getId();
         } else {
             return null;
         }
@@ -117,7 +124,7 @@ public class IdCardDao extends AbstractDao<IdCard, String> {
 
     @Override
     public boolean hasKey(IdCard entity) {
-        return entity.getUserName() != null;
+        return entity.getId() != null;
     }
 
     @Override

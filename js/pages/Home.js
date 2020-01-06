@@ -364,27 +364,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#000000',
+    paddingVertical: 8,
   },
   itemText: {
     fontSize: 14,
-  },
-  noListView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bottomfoot: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-  },
-  footText: {
-    fontSize: 15,
-    color: '#999999',
-  },
-  noListImage: {
-    height: 300,
-    width: 300,
   },
   cardViewWrap: {
     marginHorizontal: 13,
