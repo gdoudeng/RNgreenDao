@@ -12,11 +12,13 @@ class Home2 extends BaseComponent {
       title: '查询所有',
       idCardTitle: '查询所有',
       actionName1: '查询全部学生',
-      actionName2: '根据用户ID查询IDCard',
       actionName3: '查询所有IdCard',
+      actionName2: '根据学生ID查询IDCard',
+      actionName4: '根据学号查询IDCard',
       studentList: [],
       idCardList: [],
       studentKey: '',
+      studentNo: '',
     };
   }
 
@@ -31,9 +33,9 @@ class Home2 extends BaseComponent {
   };
 
   _getAllIdCard = () => {
-    const {actionName2} = this.state;
+    const {actionName3} = this.state;
     IdCardDao.getAllIdCard().then(result => {
-      this.setState({idCardTitle: [actionName2], idCardList: result});
+      this.setState({idCardTitle: [actionName3], idCardList: result});
       ToastAndroid.show('查询成功', ToastAndroid.SHORT);
     }).catch(e => {
       ToastAndroid.show(e, ToastAndroid.SHORT);
@@ -52,6 +54,18 @@ class Home2 extends BaseComponent {
     }
   };
 
+  _getIdCardByStudentNo = () => {
+    const {studentNo, actionName4} = this.state;
+    if (studentNo) {
+      StudentDao.getIdCardByStudentNo(studentNo, result => {
+        this.setState({idCardTitle: [actionName4], studentNo: '', idCardList: [result]});
+        ToastAndroid.show('查询成功', ToastAndroid.SHORT);
+      });
+    } else {
+      ToastAndroid.show('请输入要查询的学号', ToastAndroid.SHORT);
+    }
+  };
+
   _insertStudent = () => {
     StudentDao.randomAddStudent(success => {
       ToastAndroid.show('插入成功', ToastAndroid.SHORT);
@@ -65,9 +79,11 @@ class Home2 extends BaseComponent {
       title,
       idCardTitle,
       studentKey,
+      studentNo,
       actionName1,
       actionName2,
       actionName3,
+      actionName4,
     } = this.state;
     return (
         <View style={styles.container}>
@@ -123,12 +139,25 @@ class Home2 extends BaseComponent {
                     }}
                     value={studentKey}
                 />
+                <TextInput
+                    style={styles.textField}
+                    placeholder={'根据学号查询IDCard'}
+                    keyboardType={'default'}
+                    maxLength={20}
+                    onSubmitEditing={this._getIdCardByStudentNo}
+                    onChangeText={(text) => {
+                      this.setState({studentNo: text});
+                    }}
+                    value={studentNo}
+                />
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._getAllStudent}>{actionName1}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
+                        onPress={this._getAllIdCard}>{actionName3}</Button>
+                <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._getIdCardByStudentId}>{actionName2}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
-                        onPress={this._getAllIdCard}>{actionName3}</Button>
+                        onPress={this._getIdCardByStudentNo}>{actionName4}</Button>
               </Card.Content>
             </Card>
           </ScrollView>

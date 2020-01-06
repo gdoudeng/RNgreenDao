@@ -23,4 +23,8 @@ export default class StudentDao {
   static getIdCardByStudentId(id, callback) {
     StudentDBManagerModule.getIdCardByStudentId(Number(id), callback);
   }
+
+  static getIdCardByStudentNo(studentNo, callback) {
+    StudentDBManagerModule.getIdCardByStudentNo(Number(studentNo), callback);
+  }
 }

@@ -98,8 +98,22 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getIdCardByStudentId(int studentId, Callback callback) {
         Student student = mStudentDao.queryBuilder().where(StudentDao.Properties.Id.eq(studentId)).unique();
-        IdCard idCard = student.getMIdCard();
-        WritableMap map = IdCardDBManagerModule.wrapIdCard(idCard);
+        WritableMap map = Arguments.createMap();
+        if (student != null) {
+            IdCard idCard = student.getMIdCard();
+            map = IdCardDBManagerModule.wrapIdCard(idCard);
+        }
+        callback.invoke(map);
+    }
+
+    @ReactMethod
+    public void getIdCardByStudentNo(int studentNo, Callback callback) {
+        Student student = mStudentDao.queryBuilder().where(StudentDao.Properties.StudentNo.eq(studentNo)).unique();
+        WritableMap map = Arguments.createMap();
+        if (student != null) {
+            IdCard idCard = student.getMIdCard();
+            map = IdCardDBManagerModule.wrapIdCard(idCard);
+        }
         callback.invoke(map);
     }
 }
