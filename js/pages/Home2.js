@@ -4,6 +4,7 @@ import BaseComponent from '../components/BaseComponent';
 import {Button, Card, Colors} from 'react-native-paper';
 import StudentDao from '../dao/StudentDao';
 import IdCardDao from '../dao/IdCardDao';
+import CreditCardDao from '../dao/CreditCardDao';
 
 class Home2 extends BaseComponent {
   constructor(props) {
@@ -11,12 +12,16 @@ class Home2 extends BaseComponent {
     this.state = {
       title: '查询所有',
       idCardTitle: '查询所有',
+      creditCardTitle: '查询所有',
       actionName1: '查询全部学生',
       actionName3: '查询所有IdCard',
+      actionName6: '查询所有CreditCard',
       actionName2: '根据学生ID查询IDCard',
       actionName4: '根据学号查询IDCard',
+      actionName5: '根据学号查询CreditCard',
       studentList: [],
       idCardList: [],
+      creditCardList: [],
       studentKey: '',
       studentNo: '',
     };
@@ -36,6 +41,16 @@ class Home2 extends BaseComponent {
     const {actionName3} = this.state;
     IdCardDao.getAllIdCard().then(result => {
       this.setState({idCardTitle: [actionName3], idCardList: result});
+      ToastAndroid.show('查询成功', ToastAndroid.SHORT);
+    }).catch(e => {
+      ToastAndroid.show(e, ToastAndroid.SHORT);
+    });
+  };
+
+  _getAllCreditCard = () => {
+    const {actionName6} = this.state;
+    CreditCardDao.getAllCreditCard().then(result => {
+      this.setState({creditCardTitle: [actionName6], creditCardList: result});
       ToastAndroid.show('查询成功', ToastAndroid.SHORT);
     }).catch(e => {
       ToastAndroid.show(e, ToastAndroid.SHORT);
@@ -66,6 +81,18 @@ class Home2 extends BaseComponent {
     }
   };
 
+  _getCreditCardByStudentNo = () => {
+    const {studentNo, actionName5} = this.state;
+    if (studentNo) {
+      StudentDao.getCreditCardListByStudentNo(studentNo, result => {
+        this.setState({creditCardTitle: [actionName5], studentNo: '', creditCardList: result});
+        ToastAndroid.show('查询成功', ToastAndroid.SHORT);
+      });
+    } else {
+      ToastAndroid.show('请输入要查询的学号', ToastAndroid.SHORT);
+    }
+  };
+
   _insertStudent = () => {
     StudentDao.randomAddStudent(success => {
       ToastAndroid.show('插入成功', ToastAndroid.SHORT);
@@ -76,14 +103,18 @@ class Home2 extends BaseComponent {
     const {
       studentList,
       idCardList,
+      creditCardList,
       title,
       idCardTitle,
+      creditCardTitle,
       studentKey,
       studentNo,
       actionName1,
       actionName2,
       actionName3,
       actionName4,
+      actionName6,
+      actionName5,
     } = this.state;
     return (
         <View style={styles.container}>
@@ -113,6 +144,21 @@ class Home2 extends BaseComponent {
                     <Text style={styles.itemText}>id：{valueObj.id}</Text>
                     <Text style={styles.itemText}>持有者姓名：{valueObj.userName}</Text>
                     <Text style={styles.itemText}>身份证号码：{valueObj.idNo}</Text>
+                  </View>;
+                })}
+              </Card.Content>
+            </Card>
+            <Card style={styles.cardViewWrap}>
+              <Card.Title title="CreditCard查询结果" subtitle={creditCardTitle}/>
+              <Card.Content>
+                {creditCardList.map(valueObj => {
+                  return <View style={styles.itemViewWrap} key={valueObj.id}>
+                    <Text style={styles.itemText}>id：{valueObj.id}</Text>
+                    <Text style={styles.itemText}>studentId：{valueObj.studentId}</Text>
+                    <Text style={styles.itemText}>持有者姓名：{valueObj.userName}</Text>
+                    <Text style={styles.itemText}>卡号：{valueObj.cardNum}</Text>
+                    <Text style={styles.itemText}>银行：{valueObj.whichBank}</Text>
+                    <Text style={styles.itemText}>卡类型：{valueObj.cardType}</Text>
                   </View>;
                 })}
               </Card.Content>
@@ -150,14 +196,29 @@ class Home2 extends BaseComponent {
                     }}
                     value={studentNo}
                 />
+                <TextInput
+                    style={styles.textField}
+                    placeholder={'根据学号查询CreditCard'}
+                    keyboardType={'default'}
+                    maxLength={20}
+                    onSubmitEditing={this._getCreditCardByStudentNo}
+                    onChangeText={(text) => {
+                      this.setState({studentNo: text});
+                    }}
+                    value={studentNo}
+                />
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._getAllStudent}>{actionName1}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._getAllIdCard}>{actionName3}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
+                        onPress={this._getAllCreditCard}>{actionName6}</Button>
+                <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._getIdCardByStudentId}>{actionName2}</Button>
                 <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
                         onPress={this._getIdCardByStudentNo}>{actionName4}</Button>
+                <Button mode="outlined" style={styles.buttonStyle} color={Colors.black}
+                        onPress={this._getCreditCardByStudentNo}>{actionName5}</Button>
               </Card.Content>
             </Card>
           </ScrollView>

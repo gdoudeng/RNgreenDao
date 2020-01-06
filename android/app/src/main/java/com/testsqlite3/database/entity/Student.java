@@ -2,6 +2,7 @@ package com.testsqlite3.database.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
@@ -10,6 +11,10 @@ import org.greenrobot.greendao.DaoException;
 import com.testsqlite3.database.greendao.DaoSession;
 import com.testsqlite3.database.greendao.IdCardDao;
 import com.testsqlite3.database.greendao.StudentDao;
+
+import java.util.List;
+
+import com.testsqlite3.database.greendao.CreditCardDao;
 
 @Entity
 public class Student {
@@ -33,8 +38,13 @@ public class Student {
     //几年级
     private String grade;
 
-    @ToOne(joinProperty = "id") // 一对一关系,id为IdCard的外键
+    // 一对一关系,注解中的id为Student中定义的id，在insert时，将Student的id同一对一关联的IdCard的主键id绑定
+    @ToOne(joinProperty = "id")
     private IdCard mIdCard;
+
+    // 此处的studentId是在CreditCard中定义的一个变量
+    @ToMany(referencedJoinProperty = "studentId")
+    private List<CreditCard> mCreditCardList;
 
     /**
      * Used to resolve relations
@@ -172,6 +182,37 @@ public class Student {
             id = mIdCard == null ? null : mIdCard.getId();
             mIdCard__resolvedKey = id;
         }
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 712525154)
+    public List<CreditCard> getMCreditCardList() {
+        if (mCreditCardList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            CreditCardDao targetDao = daoSession.getCreditCardDao();
+            List<CreditCard> mCreditCardListNew = targetDao
+                    ._queryStudent_MCreditCardList(id);
+            synchronized (this) {
+                if (mCreditCardList == null) {
+                    mCreditCardList = mCreditCardListNew;
+                }
+            }
+        }
+        return mCreditCardList;
+    }
+
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
+    @Generated(hash = 395421686)
+    public synchronized void resetMCreditCardList() {
+        mCreditCardList = null;
     }
 
     /**

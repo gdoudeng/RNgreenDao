@@ -10,8 +10,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.testsqlite3.MainApplication;
+import com.testsqlite3.database.entity.CreditCard;
 import com.testsqlite3.database.entity.IdCard;
 import com.testsqlite3.database.entity.Student;
+import com.testsqlite3.database.greendao.CreditCardDao;
 import com.testsqlite3.database.greendao.DaoSession;
 import com.testsqlite3.database.greendao.IdCardDao;
 import com.testsqlite3.database.greendao.StudentDao;
@@ -25,6 +27,7 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
     private static final String TAG = "StudentDBManagerModule";
     private StudentDao mStudentDao;
     private IdCardDao mIdCardDao;
+    private CreditCardDao mCreditCardDao;
     private Random mRandom = new Random();
 
     public StudentDBManagerModule(@NonNull ReactApplicationContext reactContext) {
@@ -32,6 +35,7 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
         DaoSession daoSession = ((MainApplication) reactContext.getApplicationContext()).getDaoSession();
         mStudentDao = daoSession.getStudentDao();
         mIdCardDao = daoSession.getIdCardDao();
+        mCreditCardDao = daoSession.getCreditCardDao();
     }
 
     @NonNull
@@ -84,6 +88,19 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
         idCard.setUserName(userName);
         idCard.setIdNo(RandomValue.getRandomID());
         mIdCardDao.insert(idCard);
+        for (int j = 0; j < mRandom.nextInt(5) + 1; j++) {
+            CreditCard creditCard = new CreditCard();
+            if (isStudent) {
+                creditCard.setStudentId(id);
+            } else {
+//                creditCard.setTeacherId(id);
+            }
+            creditCard.setUserName(userName);
+            creditCard.setCardNum(String.valueOf(mRandom.nextInt(899999999) + 100000000) + (mRandom.nextInt(899999999) + 100000000));
+            creditCard.setWhichBank(RandomValue.getBankName());
+            creditCard.setCardType(mRandom.nextInt(10));
+            mCreditCardDao.insert(creditCard);
+        }
     }
 
     //    ========================= 查 =========================
@@ -115,5 +132,17 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
             map = IdCardDBManagerModule.wrapIdCard(idCard);
         }
         callback.invoke(map);
+    }
+
+    // 利用一对多关系 根据学号查询该生所拥有的信用卡
+    @ReactMethod
+    public void getCreditCardListByStudentNo(int studentNo, Callback callback) {
+        Student student = mStudentDao.queryBuilder().where(StudentDao.Properties.StudentNo.eq(studentNo)).unique();
+        WritableArray array = Arguments.createArray();
+        if (student != null) {
+            List<CreditCard> creditCardList = student.getMCreditCardList();
+            array = CreditCardDBManagerModule.wrapCreditCardList(creditCardList);
+        }
+        callback.invoke(array);
     }
 }
