@@ -1,9 +1,16 @@
-![avatar](./js/screenshot/a.jpg)
-
-#### 介绍
+## 介绍
 在react-native中使用greenDAO操作SQLite，存储速度有质的飞跃，也轻松应对存储具有复杂关系的数据
 
-目前只是简单的操作了单个表，后面加入一对一、一对多、多对多关系的数据库操作
+已有操作单个表、一对一关系的功能，后面将加入一对多、多对多关系的数据库操作
+
+## 单表操作
+![avatar](./js/screenshot/danbiao.png)
+
+## 一对一关系
+![avatar](./js/screenshot/yiduiyi.png)
+
+一个学生Student只有一个身份证IDCard，一对一关系,student id为IdCard的外键
+
 
 ##### 参考文章
 
@@ -15,6 +22,6 @@
 
 - [x] 单表操作
 - [x] 升级数据库不丢失数据
-- [ ] 一对一关系操作
+- [x] 一对一关系操作
 - [ ] 一对多关系操作
 - [ ] 多对多关系操作
