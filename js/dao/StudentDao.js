@@ -31,4 +31,8 @@ export default class StudentDao {
   static getCreditCardListByStudentNo(studentNo, callback) {
     StudentDBManagerModule.getCreditCardListByStudentNo(Number(studentNo), callback);
   }
+
+  static getTeacherListByStudentNo(studentNo, callback) {
+    StudentDBManagerModule.getTeacherListByStudentNo(Number(studentNo), callback);
+  }
 }

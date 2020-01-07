@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class IdCard {
-    @Id
+    @Id(autoincrement = true)
     private Long id;
     @NotNull
     private String userName; // 用户名

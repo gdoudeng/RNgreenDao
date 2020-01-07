@@ -10,6 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
         @Index(value = "id", unique = true)
 })
 public class User {
+    @NotNull
     @Id
     private Long id;
 
@@ -18,8 +19,9 @@ public class User {
     private Integer age;
     private String email;
 
-    @Generated(hash = 524868862)
-    public User(Long id, @NotNull String username, Integer age, String email) {
+    @Generated(hash = 952888270)
+    public User(@NotNull Long id, @NotNull String username, Integer age,
+                String email) {
         this.id = id;
         this.username = username;
         this.age = age;

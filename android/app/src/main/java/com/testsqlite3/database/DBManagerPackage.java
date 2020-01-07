@@ -20,6 +20,7 @@ public class DBManagerPackage implements ReactPackage {
         nativeModules.add(new StudentDBManagerModule(reactContext));
         nativeModules.add(new IdCardDBManagerModule(reactContext));
         nativeModules.add(new CreditCardDBManagerModule(reactContext));
+        nativeModules.add(new TeacherDBManagerModule(reactContext));
         return nativeModules;
     }
 

@@ -13,12 +13,17 @@ import com.testsqlite3.MainApplication;
 import com.testsqlite3.database.entity.CreditCard;
 import com.testsqlite3.database.entity.IdCard;
 import com.testsqlite3.database.entity.Student;
+import com.testsqlite3.database.entity.StudentAndTeacherBean;
+import com.testsqlite3.database.entity.Teacher;
 import com.testsqlite3.database.greendao.CreditCardDao;
 import com.testsqlite3.database.greendao.DaoSession;
 import com.testsqlite3.database.greendao.IdCardDao;
+import com.testsqlite3.database.greendao.StudentAndTeacherBeanDao;
 import com.testsqlite3.database.greendao.StudentDao;
+import com.testsqlite3.database.greendao.TeacherDao;
 import com.testsqlite3.utils.RandomValue;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -28,6 +33,8 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
     private StudentDao mStudentDao;
     private IdCardDao mIdCardDao;
     private CreditCardDao mCreditCardDao;
+    private TeacherDao mTeacherDao;
+    private StudentAndTeacherBeanDao mStudentAndTeacherBeanDao;
     private Random mRandom = new Random();
 
     public StudentDBManagerModule(@NonNull ReactApplicationContext reactContext) {
@@ -36,6 +43,8 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
         mStudentDao = daoSession.getStudentDao();
         mIdCardDao = daoSession.getIdCardDao();
         mCreditCardDao = daoSession.getCreditCardDao();
+        mTeacherDao = daoSession.getTeacherDao();
+        mStudentAndTeacherBeanDao = daoSession.getStudentAndTeacherBeanDao();
     }
 
     @NonNull
@@ -77,24 +86,34 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
         student.setGrade((age % 10) + "年级");
         student.setSchoolName(RandomValue.getSchoolName());
         mStudentDao.insert(student);
-//        为一对一关系的idcard添加数据
-        addOtherData(chineseName, student.getId(), true);
+        // 为一对一关系的idcard添加数据
+        addOtherData(chineseName, student.getId());
+        addTeachers(student.getId());
         callback.invoke(true);
     }
 
-    public void addOtherData(String userName, Long id, boolean isStudent) {
+    private void addTeachers(Long id) {
+        List<Teacher> teacherList = mTeacherDao.loadAll();
+        if (teacherList != null && teacherList.size() > 3) {
+            Collections.shuffle(teacherList);
+            for (int j = 0; j < mRandom.nextInt(5) + 1; j++) {
+                if (j < teacherList.size()) {
+                    Teacher teacher = teacherList.get(j);
+                    StudentAndTeacherBean teacherBean = new StudentAndTeacherBean(null, id, teacher.getId());
+                    mStudentAndTeacherBeanDao.insert(teacherBean);
+                }
+            }
+        }
+    }
+
+    private void addOtherData(String userName, Long id) {
         IdCard idCard = new IdCard();
-        idCard.setId(id);
         idCard.setUserName(userName);
         idCard.setIdNo(RandomValue.getRandomID());
         mIdCardDao.insert(idCard);
         for (int j = 0; j < mRandom.nextInt(5) + 1; j++) {
             CreditCard creditCard = new CreditCard();
-            if (isStudent) {
-                creditCard.setStudentId(id);
-            } else {
-//                creditCard.setTeacherId(id);
-            }
+            creditCard.setStudentId(id);
             creditCard.setUserName(userName);
             creditCard.setCardNum(String.valueOf(mRandom.nextInt(899999999) + 100000000) + (mRandom.nextInt(899999999) + 100000000));
             creditCard.setWhichBank(RandomValue.getBankName());
@@ -142,6 +161,18 @@ public class StudentDBManagerModule extends ReactContextBaseJavaModule {
         if (student != null) {
             List<CreditCard> creditCardList = student.getMCreditCardList();
             array = CreditCardDBManagerModule.wrapCreditCardList(creditCardList);
+        }
+        callback.invoke(array);
+    }
+
+    // 利用多对多关系 根据学号查询该生所对应的老师列表
+    @ReactMethod
+    public void getTeacherListByStudentNo(int studentNo, Callback callback) {
+        Student student = mStudentDao.queryBuilder().where(StudentDao.Properties.StudentNo.eq(studentNo)).unique();
+        WritableArray array = Arguments.createArray();
+        if (student != null) {
+            List<Teacher> teacherList = student.getMTeacherList();
+            array = TeacherDBManagerModule.wrapTeacherList(teacherList);
         }
         callback.invoke(array);
     }

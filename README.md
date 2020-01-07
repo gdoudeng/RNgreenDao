@@ -11,6 +11,9 @@
 
 一个学生Student只有一个身份证IDCard，一对一关系,student id为IdCard的外键
 
+## 一对多关系
+
+一个学生Student有多个信用卡CreditCard
 
 ##### 参考文章
 
@@ -18,10 +21,12 @@
 
 - [GreenDAO 完美解决数据库升级数据丢失问题](https://blog.csdn.net/qq_35956194/article/details/79167897)
 
+- [GreenDao教程(3)：一对一，一对多，多对多](https://blog.csdn.net/RobotHost/article/details/70098744)
+
 ### 功能
 
 - [x] 单表操作
 - [x] 升级数据库不丢失数据
 - [x] 一对一关系操作
-- [ ] 一对多关系操作
+- [x] 一对多关系操作
 - [ ] 多对多关系操作

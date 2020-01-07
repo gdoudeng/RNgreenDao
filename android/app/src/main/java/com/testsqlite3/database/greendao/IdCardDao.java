@@ -42,7 +42,7 @@ public class IdCardDao extends AbstractDao<IdCard, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ID_CARD\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"USER_NAME\" TEXT NOT NULL ," + // 1: userName
                 "\"ID_NO\" TEXT UNIQUE );"); // 2: idNo
     }

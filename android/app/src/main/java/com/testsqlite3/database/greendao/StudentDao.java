@@ -11,8 +11,11 @@ import org.greenrobot.greendao.internal.SqlUtils;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
+import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import com.testsqlite3.database.entity.IdCard;
+import com.testsqlite3.database.entity.StudentAndTeacherBean;
 
 import com.testsqlite3.database.entity.Student;
 
@@ -42,6 +45,7 @@ public class StudentDao extends AbstractDao<Student, Long> {
 
     private DaoSession daoSession;
 
+    private Query<Student> teacher_MStudentListQuery;
 
     public StudentDao(DaoConfig config) {
         super(config);
@@ -230,6 +234,21 @@ public class StudentDao extends AbstractDao<Student, Long> {
         return true;
     }
     
+    /** Internal query to resolve the "mStudentList" to-many relationship of Teacher. */
+    public List<Student> _queryTeacher_MStudentList(Long teacherId) {
+        synchronized (this) {
+            if (teacher_MStudentListQuery == null) {
+                QueryBuilder<Student> queryBuilder = queryBuilder();
+                queryBuilder.join(StudentAndTeacherBean.class, StudentAndTeacherBeanDao.Properties.StudentId)
+                    .where(StudentAndTeacherBeanDao.Properties.TeacherId.eq(teacherId));
+                teacher_MStudentListQuery = queryBuilder.build();
+            }
+        }
+        Query<Student> query = teacher_MStudentListQuery.forCurrentThread();
+        query.setParameter(0, teacherId);
+        return query.list();
+    }
+
     private String selectDeep;
 
     protected String getSelectDeep() {

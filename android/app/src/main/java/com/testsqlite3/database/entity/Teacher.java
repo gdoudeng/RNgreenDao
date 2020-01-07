@@ -6,51 +6,46 @@ import org.greenrobot.greendao.annotation.JoinEntity;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
+
+import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
 import com.testsqlite3.database.greendao.DaoSession;
-import com.testsqlite3.database.greendao.IdCardDao;
 import com.testsqlite3.database.greendao.StudentDao;
-
-import java.util.List;
-
 import com.testsqlite3.database.greendao.CreditCardDao;
+import com.testsqlite3.database.greendao.IdCardDao;
 import com.testsqlite3.database.greendao.TeacherDao;
 
 @Entity
-public class Student {
+public class Teacher {
     @Id(autoincrement = true)
     private Long id;
 
+    // 职工号
     @Unique
-    private Integer studentNo;
-    //年龄
-    private int age;
-    //手机号
-    private String telPhone;
-    //性别
+    private Integer teacherNo;
+    private Integer age;
     private String sex;
-    //姓名
     private String name;
-    //家庭住址
-    private String address;
     //学校名字
     private String schoolName;
-    //几年级
-    private String grade;
+    //科目
+    private String subject;
 
-    // 一对一关系,注解中的id为Student中定义的id，在insert时，将Student的id同一对一关联的IdCard的主键id绑定
+    // 一对一关系,注解中的id为Teacher中定义的id，在insert时，将Teacher的id同一对一关联的IdCard的主键id绑定
     @ToOne(joinProperty = "id")
     private IdCard mIdCard;
 
-    // 此处的studentId是在CreditCard中定义的一个变量
-    @ToMany(referencedJoinProperty = "studentId")
+    // 此处的teacherId是在CreditCard中定义的一个变量
+    @ToMany(referencedJoinProperty = "teacherId")
     private List<CreditCard> mCreditCardList;
 
+    // 们需要创建一个学生老师管理器(StudentAndTeacherBean)，用来对应学生和老师的ID;
     @ToMany
-    @JoinEntity(entity = StudentAndTeacherBean.class, sourceProperty = "studentId", targetProperty = "teacherId")
-    private List<Teacher> mTeacherList;
+    @JoinEntity(entity = StudentAndTeacherBean.class, sourceProperty = "teacherId", targetProperty = "studentId")
+    private List<Student> mStudentList;
 
     /**
      * Used to resolve relations
@@ -61,25 +56,23 @@ public class Student {
     /**
      * Used for active entity operations.
      */
-    @Generated(hash = 1943931642)
-    private transient StudentDao myDao;
+    @Generated(hash = 648119699)
+    private transient TeacherDao myDao;
 
-    @Generated(hash = 457849939)
-    public Student(Long id, Integer studentNo, int age, String telPhone, String sex, String name, String address,
-                   String schoolName, String grade) {
+    @Generated(hash = 430342201)
+    public Teacher(Long id, Integer teacherNo, Integer age, String sex, String name, String schoolName,
+                   String subject) {
         this.id = id;
-        this.studentNo = studentNo;
+        this.teacherNo = teacherNo;
         this.age = age;
-        this.telPhone = telPhone;
         this.sex = sex;
         this.name = name;
-        this.address = address;
         this.schoolName = schoolName;
-        this.grade = grade;
+        this.subject = subject;
     }
 
-    @Generated(hash = 1556870573)
-    public Student() {
+    @Generated(hash = 1630413260)
+    public Teacher() {
     }
 
     public Long getId() {
@@ -90,28 +83,20 @@ public class Student {
         this.id = id;
     }
 
-    public Integer getStudentNo() {
-        return this.studentNo;
+    public Integer getTeacherNo() {
+        return this.teacherNo;
     }
 
-    public void setStudentNo(Integer studentNo) {
-        this.studentNo = studentNo;
+    public void setTeacherNo(Integer teacherNo) {
+        this.teacherNo = teacherNo;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return this.age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
-    }
-
-    public String getTelPhone() {
-        return this.telPhone;
-    }
-
-    public void setTelPhone(String telPhone) {
-        this.telPhone = telPhone;
     }
 
     public String getSex() {
@@ -130,14 +115,6 @@ public class Student {
         this.name = name;
     }
 
-    public String getAddress() {
-        return this.address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getSchoolName() {
         return this.schoolName;
     }
@@ -146,12 +123,12 @@ public class Student {
         this.schoolName = schoolName;
     }
 
-    public String getGrade() {
-        return this.grade;
+    public String getSubject() {
+        return this.subject;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     @Generated(hash = 709993798)
@@ -194,7 +171,7 @@ public class Student {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 712525154)
+    @Generated(hash = 1952383315)
     public List<CreditCard> getMCreditCardList() {
         if (mCreditCardList == null) {
             final DaoSession daoSession = this.daoSession;
@@ -202,7 +179,7 @@ public class Student {
                 throw new DaoException("Entity is detached from DAO context");
             }
             CreditCardDao targetDao = daoSession.getCreditCardDao();
-            List<CreditCard> mCreditCardListNew = targetDao._queryStudent_MCreditCardList(id);
+            List<CreditCard> mCreditCardListNew = targetDao._queryTeacher_MCreditCardList(id);
             synchronized (this) {
                 if (mCreditCardList == null) {
                     mCreditCardList = mCreditCardListNew;
@@ -224,30 +201,30 @@ public class Student {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 694913686)
-    public List<Teacher> getMTeacherList() {
-        if (mTeacherList == null) {
+    @Generated(hash = 1964508019)
+    public List<Student> getMStudentList() {
+        if (mStudentList == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            TeacherDao targetDao = daoSession.getTeacherDao();
-            List<Teacher> mTeacherListNew = targetDao._queryStudent_MTeacherList(id);
+            StudentDao targetDao = daoSession.getStudentDao();
+            List<Student> mStudentListNew = targetDao._queryTeacher_MStudentList(id);
             synchronized (this) {
-                if (mTeacherList == null) {
-                    mTeacherList = mTeacherListNew;
+                if (mStudentList == null) {
+                    mStudentList = mStudentListNew;
                 }
             }
         }
-        return mTeacherList;
+        return mStudentList;
     }
 
     /**
      * Resets a to-many relationship, making the next get call to query for a fresh result.
      */
-    @Generated(hash = 333346580)
-    public synchronized void resetMTeacherList() {
-        mTeacherList = null;
+    @Generated(hash = 1611095639)
+    public synchronized void resetMStudentList() {
+        mStudentList = null;
     }
 
     /**
@@ -289,10 +266,10 @@ public class Student {
     /**
      * called by internal mechanisms, do not call yourself.
      */
-    @Generated(hash = 1701634981)
+    @Generated(hash = 1349174479)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getStudentDao() : null;
+        myDao = daoSession != null ? daoSession.getTeacherDao() : null;
     }
 
 

@@ -43,8 +43,15 @@ public class CreditCardDBManagerModule extends ReactContextBaseJavaModule {
 
     private static WritableMap wrapCreditCard(CreditCard creditCard) {
         WritableMap map = Arguments.createMap();
-        map.putInt("id", creditCard.getId().intValue());
-        map.putInt("studentId", creditCard.getStudentId().intValue());
+        if (creditCard.getId() != null) {
+            map.putInt("id", creditCard.getId().intValue());
+        }
+        if (creditCard.getStudentId() != null) {
+            map.putInt("studentId", creditCard.getStudentId().intValue());
+        }
+        if (creditCard.getTeacherId() != null) {
+            map.putInt("teacherId", creditCard.getTeacherId().intValue());
+        }
         map.putString("userName", creditCard.getUserName());
         map.putString("cardNum", creditCard.getCardNum());
         map.putString("whichBank", creditCard.getWhichBank());
